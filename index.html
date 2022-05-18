@@ -7,15 +7,19 @@
     <title>chart</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="simple-console.css">
+
     <head>
 
     <body>
         <div id="container">
             <a id="candleprice" class="rz-helper-hidden"></a>
+            <button type="submit" onclick="plot()">Update Plot</button>
+            <button type="reset" onclick="doclear()">Clear Log</button>
             <canvas id="candlestick"></canvas>
 
             <div id="simple">
-
+                <ul id="myList">
+                </ul>
             </div>
         </div>
     </body>
@@ -23,37 +27,26 @@
         .rz-helper-hidden {
             display: none;
         }
-        h1,
-        p {
-            margin: 0.5rem 0;
-        }
 
-        h1,
-        h2 {
-            font-family: "Open Sans", sans-serif;
-        }
-
-        h1 {
-            font-weight: normal;
-        }
-
-        a {
-            color: #4078c0;
-        }
-
-        a:not(:hover) {
-            text-decoration: none;
-        }
-
-        code {
-            font-family: inherit;
-            padding: 0.1em 0.2em;
-            border: 1px solid rgba(128, 128, 128, 0.5);
-            border-radius: 0.1em;
+        ul.no-bullets {
+            list-style-type: none;
+            /* Remove bullets */
+            padding: 0;
+            /* Remove padding */
+            margin: 0;
+            /* Remove margins */
         }
     </style>
     <script type="text/javascript" src="./simple-console.js"></script>
-    <script src="./demo.js"></script>
+    <script type="text/javascript">
+        function plot() {
+            Shakely.plot("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100");
+        };
+
+        function doclear() {
+            Shakely.doclear();
+        };
+    </script>
     <script type="text/javascript" src="./ShakelyConsole.js"></script>
     <script type="text/javascript" src="./Shakely.js"></script>
     <script>

@@ -1,6 +1,5 @@
 var con = new SimpleConsole({
     handleCommand: handle_command,
-    placeholder: "Enter JavaScript, or ASCII emoticons :)",
     storageID: "simple-console demo"
 });
 document.body.appendChild(con.element);

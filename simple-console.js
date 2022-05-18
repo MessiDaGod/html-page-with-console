@@ -7,7 +7,7 @@ var SimpleConsole = function (options) {
 
     var output_only = options.outputOnly;
     var handle_command = options.handleCommand;
-    var placeholder = options.placeholder || "";
+
     var autofocus = options.autofocus;
     var storage_id = options.storageID || "simple-console";
 
@@ -46,8 +46,7 @@ var SimpleConsole = function (options) {
     var input = document.createElement("input");
     input.className = "simple-console-input";
     input.setAttribute("autofocus", "autofocus");
-    input.setAttribute("placeholder", placeholder);
-    input.setAttribute("aria-label", placeholder);
+    input.setAttribute("display", "none");
 
     console_element.appendChild(output);
     if (!output_only) {
