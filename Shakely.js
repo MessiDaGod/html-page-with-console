@@ -37,13 +37,24 @@
             var el = document.getElementById("info");
             var url = "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100";
 
+            var con = new SimpleConsole({
+                handleCommand: handle_command,
+                placeholder: "Enter JavaScript, or ASCII emoticons :)",
+                storageID: "simple-console demo"
+            });
+            document.body.appendChild(con.element);
+
+
             var params = url.split('&');
 
             for (let index = 0; index < params.length; index++) {
                 const element = params[index];
 
                 if (el != null && element.includes('limit'))
+                {
                     el.textContent = element;
+                    con.logHTML(element);
+                }
             }
 
             var xmlhttp = new XMLHttpRequest();
