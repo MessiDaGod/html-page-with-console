@@ -226,13 +226,14 @@
         },
         draw: function () {
             // clear background
+
             Shakely.ctx.clearRect(0, 0, Shakely.width, Shakely.height);
             header.ctx.clearRect(0, 0, header.width, header.height);
             Shakely.calculateYRange();
             Shakely.calculateXRange();
             Shakely.drawGrid();
 
-            let x = window.innerWidth * 0.673;
+            let x = Shakely.width * 0.673;
 
 
             //Shakely.onInit(Shakely.candlesticks.reverse()[0]);
@@ -322,13 +323,13 @@
             header.ctx.fillText("O: ", x, 20);
             header.ctx.fillText(Shakely.fmt(Shakely.candlesticks[Shakely.hoveredCandlestickID].open), x + 20, 20);
 
-            header.ctx.fillText("H: ", x + 95 + 5, 20);
+            header.ctx.fillText("H: ", x + (Shakely.width * (95 / 1100)), 20);
             header.ctx.fillText(Shakely.fmt(Shakely.candlesticks[Shakely.hoveredCandlestickID].high), x + 95 + 20, 20);
 
-            header.ctx.fillText("L: ", x + (95 * 2) + 5, 20);
+            header.ctx.fillText("L: ", x + (Shakely.width * (95 / 1100))  * 2, 20);
             header.ctx.fillText(Shakely.fmt(Shakely.candlesticks[Shakely.hoveredCandlestickID].low), x + (95 * 2) + 20, 20);
 
-            header.ctx.fillText("C: ", x + (95 * 3) + 5, 20);
+            header.ctx.fillText("C: ", x + (Shakely.width * (95 / 1100))  * 3, 20);
             header.ctx.fillText(Shakely.fmt(Shakely.candlesticks[Shakely.hoveredCandlestickID].close), x + (95 * 3) + 20, 20);
 
             // draw mouse hover
