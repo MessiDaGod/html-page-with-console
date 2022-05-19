@@ -4,29 +4,45 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>chart</title>
+    <title>BTC-USD</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="simple-console.css">
-
+    <link rel="icon" href="./images/favicon.ico" />
     <head>
 
     <body>
         <div id="container">
             <a id="candleprice" class="rz-helper-hidden"></a>
-            <button type="submit" onclick="plot()">Update Plot</button>
-            <button type="reset" onclick="doclear()">Clear Log</button>
-            <canvas id="candlestick"></canvas>
+            <button class="button" type="submit" onclick="plot()">Update Plot</button>
+            <button class="button" type="reset" onclick="doclear()">Clear Log</button>
+            <main>
+                <canvas id="header"></canvas>
+                <canvas id="candlestick"></canvas>
+
+            </main>
 
             <div id="simple">
                 <ul id="myList">
+
                 </ul>
             </div>
         </div>
     </body>
     <style>
+
+        main {
+            background-color: #060d13;
+            z-index: -1;
+            width: calc(100vw * 0.9)
+        }
+        canvas {
+            margin: 0;
+            padding:0
+        }
+
         .rz-helper-hidden {
             display: none;
         }
+
 
         ul.no-bullets {
             list-style-type: none;
@@ -36,21 +52,31 @@
             margin: 0;
             /* Remove margins */
         }
+
+        .button {
+            position: relative;
+        }
     </style>
-    <script type="text/javascript" src="./simple-console.js"></script>
+
     <script type="text/javascript">
         function plot() {
-            Shakely.plot("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100");
+            Shakely.plot("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=50");
         };
 
         function doclear() {
             Shakely.doclear();
         };
+
+        window.onload = function() {
+            plot();
+            updateTitle();
+          };
+
+        function updateTitle() {
+            Shakely.updateTitle();
+        }
     </script>
-    <script type="text/javascript" src="./ShakelyConsole.js"></script>
+
     <script type="text/javascript" src="./Shakely.js"></script>
-    <script>
-        Shakely.plot("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100");
-    </script>
 
 </html>
