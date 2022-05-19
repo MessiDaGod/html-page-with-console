@@ -48,6 +48,7 @@
         plot: function ( /** @type {string | URL} */ url) {
             this.webSocketConnected = false;
             this.webSocketHost = "wss://stream.binance.com:9443/ws/" + "BTCUSDT" + "@kline_" + "1";
+
             if (this.url == null) this.url = "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=50";
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", url, true);
@@ -71,30 +72,24 @@
             xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xmlhttp.send();
         },
-        candleStick: function ( /** @type {string} */ timestamp, /** @type {string} */ open, /** @type {string} */ close, /** @type {string} */ high, /** @type {string} */ low) {
-            this.timestamp = parseInt(timestamp);
-            this.open = parseFloat(open);
-            this.close = parseFloat(close);
-            this.high = parseFloat(high);
-            this.low = parseFloat(low);
-            let price = parseFloat(close);
-            document.title = "BTC-USD | " + Shakely.fmt(price);
-            // let el = document.querySelector('header');
-            // el.setAttribute("width", window.innerWidth - 50 + "px");
-        },
-        candleStickChart: function ( /** @type {string} */ canvasElementID) {
+        init: function ( /** @type {string} */ canvasElementID) {
             Shakely.canvas = document.getElementById(canvasElementID);
             var header = document.getElementById("header");
 
-            new Log(1100 / window.innerWidth);
-            header.width = window.innerWidth * 0.9;
+            header.width = window.innerWidth * 0.97;
             header.height = window.innerHeight * 0.04;
-            header.style.backgroundColor = "#060d13";
-            Shakely.canvas.width = window.innerWidth * 0.90;
+
+            Shakely.canvas.width = header.width;
             Shakely.canvas.height = window.innerHeight * 0.80;
 
-            if (Shakely.canvas.width) Shakely.width = parseInt(Shakely.canvas.width);
-            Shakely.height = parseInt(Shakely.canvas.height);
+            // if (Shakely.canvas.width)
+            //     Shakely.width = parseInt(Shakely.canvas.width);
+
+            // Shakely.height = parseInt(Shakely.canvas.height);
+
+            Shakely.width = Shakely.canvas.width;
+            Shakely.height = Shakely.canvas.height;
+
             Shakely.ctx = Shakely.canvas.getContext("2d");
             header.ctx = header.getContext("2d");
 
@@ -105,12 +100,17 @@
                 Shakely.mouseOut(e);
             });
 
+            addEventListener("resize",  ( /** @type {any} */ e) => {
+                Shakely.resize(e);
+            });
+
             // Shakely.canvas.addEventListener("wheel", ( /** @type {{ preventDefault: () => void; }} */ e) =>
             // {
             //     Shakely.scroll(e);
             //     e.preventDefault();
             // });
 
+            header.style.backgroundColor = "#060d13";
             Shakely.canvas.style.backgroundColor = "#060d13";
             Shakely.ctx.font = '12px sans-serif';
             header.ctx.font = '12px sans-serif';
@@ -150,6 +150,24 @@
             Shakely.zoomStartID = 0;
             Shakely.technicalIndicators = [];
             Shakely.candlesticks = [];
+
+        },
+        candleStick: function ( /** @type {string} */ timestamp, /** @type {string} */ open, /** @type {string} */ close, /** @type {string} */ high, /** @type {string} */ low) {
+            this.timestamp = parseInt(timestamp);
+            this.open = parseFloat(open);
+            this.close = parseFloat(close);
+            this.high = parseFloat(high);
+            this.low = parseFloat(low);
+            let price = parseFloat(close);
+            document.title = "BTC-USD | " + Shakely.fmt(price);
+            // let el = document.querySelector('header');
+            // el.setAttribute("width", window.innerWidth - 50 + "px");
+        },
+        candleStickChart: function ( /** @type {string} */ canvasElementID) {
+
+            Shakely.init(canvasElementID);
+
+
         },
         scroll: function ( /** @type {{ deltaY: number; }} */ e) {
             let url = "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100";
@@ -203,8 +221,8 @@
             Shakely.b_drawMouseOverlay = false;
             Shakely.draw();
         },
-        resize: function ( /** @type {any} */ e) {
-            Shakely.draw();
+        resize: function ( /** @type {any} */ ) {
+            Shakely.init(canvasElementID);
         },
         draw: function () {
             // clear background
