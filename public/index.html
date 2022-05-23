@@ -15,7 +15,7 @@
             <button class="button" type="submit" onclick="plot()">Update Plot</button>
             <button class="button" type="reset" onclick="doclear()">Clear Log</button>
             <main>
-                <canvas id="header"></canvas>
+                <canvas id="header" width="100px"></canvas>
                 <canvas id="candlestick"></canvas>
 
             </main>
@@ -26,6 +26,27 @@
                 </ul>
             </div>
         </div>
+
+        <script type="text/javascript">
+            function plot() {
+                Shakely.plot("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=50");
+            };
+
+            function doclear() {
+                Shakely.doclear();
+            };
+
+            window.onload = function() {
+                plot();
+                updateTitle();
+              };
+
+            function updateTitle() {
+                Shakely.updateTitle();
+            }
+        </script>
+
+        <script type="text/javascript" src="./Shakely.js" defer></script>
     </body>
     <style>
 
@@ -55,26 +76,5 @@
             position: relative;
         }
     </style>
-
-    <script type="text/javascript">
-        function plot() {
-            Shakely.plot("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=50");
-        };
-
-        function doclear() {
-            Shakely.doclear();
-        };
-
-        window.onload = function() {
-            plot();
-            updateTitle();
-          };
-
-        function updateTitle() {
-            Shakely.updateTitle();
-        }
-    </script>
-
-    <script type="text/javascript" src="./Shakely.js"></script>
 
 </html>

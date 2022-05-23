@@ -86,12 +86,11 @@
             Shakely.canvas = document.getElementById(canvasElementID);
             var header = document.getElementById("header");
 
-            new Log(1100 / window.innerWidth);
             header.width = window.innerWidth * 0.9;
             header.height = window.innerHeight * 0.04;
             header.style.backgroundColor = "#060d13";
-            Shakely.canvas.width = window.innerWidth * 0.90;
-            Shakely.canvas.height = window.innerHeight * 0.80;
+            Shakely.canvas.width = window.innerWidth * 0.9;
+            Shakely.canvas.height = window.innerHeight * 0.8;
 
             if (Shakely.canvas.width) Shakely.width = parseInt(Shakely.canvas.width);
             Shakely.height = parseInt(Shakely.canvas.height);
@@ -103,6 +102,10 @@
             });
             Shakely.canvas.addEventListener("mouseout", ( /** @type {any} */ e) => {
                 Shakely.mouseOut(e);
+            });
+
+            addEventListener("resize", ( /** @type {any} */ e) => {
+                Shakely.resize(e);
             });
 
             // Shakely.canvas.addEventListener("wheel", ( /** @type {{ preventDefault: () => void; }} */ e) =>
@@ -123,10 +126,10 @@
             Shakely.greenHoverColor = "#00ff00";
             Shakely.redHoverColor = "#ff0000";
             Shakely.candleWidth = 5;
-            Shakely.marginLeft = 10;
-            Shakely.marginRight = 100;
-            Shakely.marginTop = 10;
-            Shakely.marginBottom = 30;
+            Shakely.marginLeft = 0;
+            Shakely.marginRight = 0;
+            Shakely.marginTop = 0;
+            Shakely.marginBottom = 0;
             Shakely.yStart = 0;
             Shakely.yEnd = 0;
             Shakely.yRange = 0;
@@ -150,6 +153,9 @@
             Shakely.zoomStartID = 0;
             Shakely.technicalIndicators = [];
             Shakely.candlesticks = [];
+        },
+        resize: function() {
+            Shakely.plot("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100");
         },
         scroll: function ( /** @type {{ deltaY: number; }} */ e) {
             let url = "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100";
@@ -210,9 +216,6 @@
             Shakely.calculateYRange();
             Shakely.calculateXRange();
             Shakely.drawGrid();
-
-            let x = window.innerWidth * 0.673;
-
 
             //Shakely.onInit(Shakely.candlesticks.reverse()[0]);
 
@@ -295,6 +298,8 @@
             Shakely.ctx.fillStyle = Shakely.gridTextColor;
 
             // Adding prices in the top right corner like coinbase has when hovering over.
+            let x = Shakely.canvas.width * 0.6;
+            header.ctx.fillStyle = Shakely.gridTextColor;
 
             header.ctx.fillStyle = Shakely.gridTextColor;
 
@@ -309,6 +314,7 @@
 
             header.ctx.fillText("C: ", x + (95 * 3) + 5, 20);
             header.ctx.fillText(Shakely.fmt(Shakely.candlesticks[Shakely.hoveredCandlestickID].close), x + (95 * 3) + 20, 20);
+
 
             // draw mouse hover
             if (Shakely.b_drawMouseOverlay) {
@@ -528,23 +534,6 @@
             this.color = color;
             this.lineWidth = lineWidth;
             this.data = [];
-        },
-        onInit: function ( /** @type {{ candlesticks: string | any[]; }} */ candlestickChart) {
-
-            let x = 1100;
-            header.ctx.fillStyle = Shakely.gridTextColor;
-
-            header.ctx.fillText("O: ", x, 20);
-            header.ctx.fillText(Shakely.fmt(candlestickChart.open), x + 20, 20);
-
-            header.ctx.fillText("H: ", x + 95 + 5, 20);
-            header.ctx.fillText(Shakely.fmt(candlestickChart.high), x + 95 + 20, 20);
-
-            header.ctx.fillText("L: ", x + (95 * 2) + 5, 20);
-            header.ctx.fillText(Shakely.fmt(candlestickChart.low), x + (95 * 2) + 20, 20);
-
-            header.ctx.fillText("C: ", x + (95 * 3) + 5, 20);
-            header.ctx.fillText(Shakely.fmt(candlestickChart.close), x + (95 * 3) + 20, 20);
         },
         onAddCandlestick: function ( /** @type {{ candlesticks: { [x: string]: { close: number; }; }; }} */ candlestickChart, /** @type {number} */ candlestickID) {
             // average the number of samples
