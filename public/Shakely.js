@@ -302,6 +302,10 @@
             header.ctx.fillStyle = Shakely.gridTextColor;
 
             header.ctx.fillStyle = Shakely.gridTextColor;
+            new Log("1 " + x / Shakely.canvas.width);
+            new Log("2 " + (x + 95 + 5) / Shakely.canvas.width);
+            new Log("3 " + (x + (95 * 2) + 5) /  Shakely.canvas.width);
+            new Log("4 " + (x + (95 * 3) + 5) /  Shakely.canvas.width);
 
             header.ctx.fillText("O: ", x, 20);
             header.ctx.fillText(Shakely.fmt(Shakely.candlesticks[Shakely.hoveredCandlestickID].open), x + 20, 20);
