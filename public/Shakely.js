@@ -45,6 +45,35 @@
         doclear: function () {
             document.getElementById("myList").innerHTML = "";
         },
+        plot2: function () {
+            //let json = JSON.parse('./data.json');
+            let json = JSON.parse(Shakely.readTextFile("file:///Users/jshakely/repos/basic/public/data.json"));
+
+            Shakely.candlestickChart = new Shakely.candleStickChart("candlestick");
+            for (var i = 0; i < json.length; ++i) {
+                Shakely.addCandlestick(new Shakely.candleStick(
+                    json[i][0], // timestamp
+                    json[i][1], // open
+                    json[i][4], // close
+                    json[i][2], // high
+                    json[i][3], // low
+                ));
+            }
+            Shakely.draw();
+        },
+        readTextFile: function (file) {
+            var rawFile = new XMLHttpRequest();
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function () {
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status === 200 || rawFile.status == 0) {
+                        var allText = rawFile.responseText;
+                        alert(allText);
+                    }
+                }
+            }
+            rawFile.send(null);
+        },
         plot: function ( /** @type {string | URL} */ url) {
             this.webSocketConnected = false;
             this.webSocketHost = "wss://stream.binance.com:9443/ws/" + "BTCUSDT" + "@kline_" + "1";
@@ -86,11 +115,11 @@
             Shakely.canvas = document.getElementById(canvasElementID);
             var header = document.getElementById("header");
 
-            header.width = window.innerWidth * 0.9;
+            header.width = window.innerWidth * 0.95;
             header.height = window.innerHeight * 0.04;
             header.style.backgroundColor = "#060d13";
-            Shakely.canvas.width = window.innerWidth * 0.9;
-            Shakely.canvas.height = window.innerHeight * 0.8;
+            Shakely.canvas.width = window.innerWidth * 0.95;
+            Shakely.canvas.height = window.innerHeight * 0.9;
 
             if (Shakely.canvas.width) Shakely.width = parseInt(Shakely.canvas.width);
             Shakely.height = parseInt(Shakely.canvas.height);
@@ -154,8 +183,8 @@
             Shakely.technicalIndicators = [];
             Shakely.candlesticks = [];
         },
-        resize: function() {
-            Shakely.plot("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100");
+        resize: function () {
+            Shakely.plot("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=1");
         },
         scroll: function ( /** @type {{ deltaY: number; }} */ e) {
             let url = "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100";
@@ -231,10 +260,9 @@
              * This part makes the candles thicker so that they touch
              */
             /**********************   DRAW RED BOXES  **********************/
-            for (let i = 0; i < Shakely.candlesticks.length; ++i)
-            {
+            for (let i = 0; i < Shakely.candlesticks.length; ++i) {
                 if (Shakely.candlesticks[i].close > Shakely.candlesticks[i].open)
-                continue;
+                    continue;
 
                 // Shakely.candleWidth = Shakely.xPixelRange / (Shakely.candlesticks.length - Shakely.zoomStartID);
                 // Shakely.candleWidth--;
@@ -254,7 +282,7 @@
 
             for (let i = 0; i < Shakely.candlesticks.length; ++i) {
                 if (Shakely.candlesticks[i].close > Shakely.candlesticks[i].open)
-                continue;
+                    continue;
                 let color = Shakely.candlesticks[i].close > Shakely.candlesticks[i].open ? Shakely.greenColor : Shakely.redColor;
                 if (i == Shakely.hoveredCandlestickID) {
                     if (color == Shakely.greenColor) color = Shakely.greenHoverColor;
@@ -270,7 +298,7 @@
 
             for (let i = 0; i < Shakely.candlesticks.length; i++) {
                 if (Shakely.candlesticks[i].close < Shakely.candlesticks[i].open)
-                continue;
+                    continue;
 
                 Shakely.setGreenStroke(Shakely.candlesticks[i]);
 
@@ -279,7 +307,7 @@
                     if (color == Shakely.greenColor) color = Shakely.greenHoverColor;
                     else if (color == Shakely.redColor) color = Shakely.redHoverColor;
                 }
-                 Shakely.ctx.setLineDash([]);
+                Shakely.ctx.setLineDash([]);
                 // draw the wick
                 Shakely.drawLine(Shakely.xToPixelCoords(Shakely.candlesticks[i].timestamp), Shakely.yToPixelCoords(Shakely.candlesticks[i].low), Shakely.xToPixelCoords(Shakely.candlesticks[i].timestamp), Shakely.yToPixelCoords(Shakely.candlesticks[i].high), color);
                 // draw the candle
@@ -374,7 +402,7 @@
                 // header.ctx.fillText("C: " + Shakely.fmt(Shakely.candlesticks[Shakely.hoveredCandlestickID].close), 1100 + (textWidth * 3) + 5, 20);
             }
         },
-        fmt: function(number) {
+        fmt: function (number) {
             return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
         },
         setGreenStroke: function () {
@@ -385,7 +413,7 @@
             Shakely.ctx.lineWidth = 1;
             Shakely.ctx.strokeStyle = '#38f';
         },
-        clearStroke: function() {
+        clearStroke: function () {
             Shakely.ctx.shadowColor = '';
             Shakely.ctx.shadowBlur = 0;
             Shakely.ctx.lineJoin = '';
@@ -464,7 +492,7 @@
                     dateStr = date.toLocaleTimeString();
                 }
                 Shakely.ctx.fillStyle = Shakely.gridTextColor;
-                Shakely.ctx.fillText(dateStr, Shakely.xToPixelCoords(x) + 5, Shakely.height- 25);
+                Shakely.ctx.fillText(dateStr, Shakely.xToPixelCoords(x) + 5, Shakely.height - 25);
             }
         },
         calculateYRange: function () {
@@ -607,110 +635,110 @@
             xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xmlhttp.send();
         },
-        updateTitle: function() {
+        updateTitle: function () {
             new Log(Shakely.getCurrentPrice());
             document.title = Shakely.getCurrentPrice();
         }
     };
 
-    // Warn if overriding existing method
-    if (Array.prototype.equals)
-        console.warn("Overriding existing Array.prototype.equals. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
-    // attach the .equals method to Array's prototype to call it on any array
-    Array.prototype.equals = function (array) {
-        // if the other array is a falsy value, return
-        if (!array)
-            return false;
+    // // Warn if overriding existing method
+    // if (Array.prototype.equals)
+    //     console.warn("Overriding existing Array.prototype.equals. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
+    // // attach the .equals method to Array's prototype to call it on any array
+    // Array.prototype.equals = function (array) {
+    //     // if the other array is a falsy value, return
+    //     if (!array)
+    //         return false;
 
-        // compare lengths - can save a lot of time
-        if (this.length != array.length)
-            return false;
+    //     // compare lengths - can save a lot of time
+    //     if (this.length != array.length)
+    //         return false;
 
-        for (var i = 0, l = this.length; i < l; i++) {
-            // Check if we have nested arrays
-            if (this[i] instanceof Array && array[i] instanceof Array) {
-                // recurse into the nested arrays
-                if (!this[i].equals(array[i]))
-                    return false;
-            }
-            else if (this[i] != array[i]) {
-                // Warning - two different object instances will never be equal: {x:20} != {x:20}
-                return false;
-            }
-        }
-        return true;
-    };
+    //     for (var i = 0, l = this.length; i < l; i++) {
+    //         // Check if we have nested arrays
+    //         if (this[i] instanceof Array && array[i] instanceof Array) {
+    //             // recurse into the nested arrays
+    //             if (!this[i].equals(array[i]))
+    //                 return false;
+    //         }
+    //         else if (this[i] != array[i]) {
+    //             // Warning - two different object instances will never be equal: {x:20} != {x:20}
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // };
 
-    if (Array.prototype.contains)
-        console.warn("Overriding existing Array.prototype.contains. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
-    // attach the .contains method to Array's prototype to call it on any array
-    Array.prototype.contains = function (thing) {
-        // if the other array is a falsy value, return false
-        if (!this)
-            return false;
+    // if (Array.prototype.contains)
+    //     console.warn("Overriding existing Array.prototype.contains. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
+    // // attach the .contains method to Array's prototype to call it on any array
+    // Array.prototype.contains = function (thing) {
+    //     // if the other array is a falsy value, return false
+    //     if (!this)
+    //         return false;
 
-        //start by assuming the array doesn't contain the thing
-        var result = false;
-        for (var i = 0, l = this.length; i < l; i++) {
-            //if anything in the array is the thing then change our mind from before
+    //     //start by assuming the array doesn't contain the thing
+    //     var result = false;
+    //     for (var i = 0, l = this.length; i < l; i++) {
+    //         //if anything in the array is the thing then change our mind from before
 
-            if (this[i] instanceof Array) {
-                if (this[i].equals(thing))
-                    result = true;
-            }
-            else
-                if (this[i] === thing)
-                    result = true;
-
-
-        }
-        //return the decision we left in the variable, result
-        return result;
-    };
-
-    //if(Array.prototype.indexOf)
-    //no warnings here because I'm intentionally overriding it, but it should do the same thing in all cases except nested arrays
-    // attach the .indexOf method to Array's prototype to call it on any array
-    Array.prototype.indexOf = function (thing) {
-        // if the other array is a falsy value, return -1
-        if (!this)
-            return -1;
-
-        //start by assuming the array doesn't contain the thing
-        var result = -1;
-        for (var i = 0, l = this.length; i < l; i++) {
-            //if anything in the array is the thing then change our mind from before
-            if (this[i] instanceof Array)
-                if (this[i].equals(thing))
-                    result = i;
-                else
-                    if (this[i] === thing)
-                        result = i;
+    //         if (this[i] instanceof Array) {
+    //             if (this[i].equals(thing))
+    //                 result = true;
+    //         }
+    //         else
+    //             if (this[i] === thing)
+    //                 result = true;
 
 
-        }
-        //return the decision we left in the variable, result
-        return result;
-    };
+    //     }
+    //     //return the decision we left in the variable, result
+    //     return result;
+    // };
+
+    // //if(Array.prototype.indexOf)
+    // //no warnings here because I'm intentionally overriding it, but it should do the same thing in all cases except nested arrays
+    // // attach the .indexOf method to Array's prototype to call it on any array
+    // Array.prototype.indexOf = function (thing) {
+    //     // if the other array is a falsy value, return -1
+    //     if (!this)
+    //         return -1;
+
+    //     //start by assuming the array doesn't contain the thing
+    //     var result = -1;
+    //     for (var i = 0, l = this.length; i < l; i++) {
+    //         //if anything in the array is the thing then change our mind from before
+    //         if (this[i] instanceof Array)
+    //             if (this[i].equals(thing))
+    //                 result = i;
+    //             else
+    //                 if (this[i] === thing)
+    //                     result = i;
+
+
+    //     }
+    //     //return the decision we left in the variable, result
+    //     return result;
+    // };
 
 
 
     // ***This part generates the examples to the right***
 
-    var things = ["[1,2,3,4].contains(1)", "[[1,2],[3,4],5].contains([1,2])", "[[1,2],[3,4],5].contains([1])", "[[1,2],[2,3]].equals([[1,2],[2,3]])", "[['hello', 'world'], ['i like cookies']].indexOf(['hello', 'world'])", "[['hello', 'world'], ['i like cookies']].indexOf('hello')", "[['hello', 'world'], ['i like cookies']].indexOf(['cookies'])"];
+    // var things = ["[1,2,3,4].contains(1)", "[[1,2],[3,4],5].contains([1,2])", "[[1,2],[3,4],5].contains([1])", "[[1,2],[2,3]].equals([[1,2],[2,3]])", "[['hello', 'world'], ['i like cookies']].indexOf(['hello', 'world'])", "[['hello', 'world'], ['i like cookies']].indexOf('hello')", "[['hello', 'world'], ['i like cookies']].indexOf(['cookies'])"];
 
     // document.getElementsByTagName("p")[0].innerHTML = "";
 
-    function colorize(mystr) {
-        mystr = "" + mystr;
-        if (mystr == "true")
-            return '<font color="green">true</color>';
-        if (mystr == "false" || mystr == "-1")
-            return '<font color="red">' + mystr + '</color>';
-        else
-            return '<font color="blue">' + mystr + '</color>';
+    // function colorize(mystr) {
+    //     mystr = "" + mystr;
+    //     if (mystr == "true")
+    //         return '<font color="green">true</color>';
+    //     if (mystr == "false" || mystr == "-1")
+    //         return '<font color="red">' + mystr + '</color>';
+    //     else
+    //         return '<font color="blue">' + mystr + '</color>';
 
-    }
+    // }
 
     // for (var i = 0; i < things.length; i++) {
 
